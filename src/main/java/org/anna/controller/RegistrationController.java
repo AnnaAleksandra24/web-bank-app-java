@@ -15,10 +15,10 @@ public class RegistrationController implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
 
-//  URI: /registration
-//  Method(HTTP): GET
-//  Method(HTTP): POST
-        System.out.println(exchange.getRequestMethod());
+    //  URI: /registration
+    //  Method(HTTP): GET
+    //  Method(HTTP): POST
+    //  System.out.println(exchange.getRequestMethod());
 
         OutputStream os = exchange.getResponseBody();
         try {
