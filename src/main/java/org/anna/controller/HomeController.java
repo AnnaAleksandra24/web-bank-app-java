@@ -3,7 +3,7 @@ package org.anna.controller;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.anna.utils.ReplacementTable;
-import org.anna.utils.TemplateUtil;
+import org.anna.utils.ViewUtil;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -20,14 +20,9 @@ public class HomeController implements HttpHandler {
         OutputStream os = exchange.getResponseBody();
         try {
             if (exchange.getRequestMethod().equalsIgnoreCase("GET")) {
-                byte [] bytes = TemplateUtil.getHTMLBytes("home.html", table.getTable());
-                exchange.sendResponseHeaders(200, bytes.length);
-                os.write(bytes);
+                ViewUtil.sendHTML(exchange, "home.html", table.getTable());
             }   else {
-                String response = "405 Method Not Allowed";
-                byte [] bytes = response.getBytes();
-                exchange.sendResponseHeaders(405, bytes.length);
-                os.write(response.getBytes());
+                ViewUtil.sendMethodNotAllowed(exchange);
             }
         } catch (Exception e) {
             System.out.println(e);
