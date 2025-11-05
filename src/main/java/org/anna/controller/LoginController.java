@@ -2,6 +2,7 @@ package org.anna.controller;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import org.anna.service.UserService;
 import org.anna.utils.ReplacementTable;
 import org.anna.utils.ViewUtil;
 
@@ -11,6 +12,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 
 public class LoginController implements HttpHandler {
+    UserService userService;
+    public LoginController(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
@@ -20,6 +25,7 @@ public class LoginController implements HttpHandler {
         //  System.out.println(exchange.getRequestMethod());
 
         OutputStream os = exchange.getResponseBody();
+        UserService userService = new UserService();
         try {
             if (exchange.getRequestMethod().equalsIgnoreCase("GET")){
                 ReplacementTable table = new ReplacementTable();
@@ -46,8 +52,10 @@ public class LoginController implements HttpHandler {
                     System.out.println(password);
                     // validations!
 
-                    if (user != null && password != null) {
-                        ViewUtil.sendRedirect(exchange);
+                    String sessionId = userService.login(user, password);
+                    System.out.println(sessionId);
+                    if (sessionId != null) {
+                        ViewUtil.sendRedirect(exchange, sessionId);
                     } else {
                         ReplacementTable table = new ReplacementTable();
                         table.setTableRow("@alert-login", """

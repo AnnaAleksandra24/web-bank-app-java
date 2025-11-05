@@ -2,6 +2,7 @@ package org.anna.controller;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import org.anna.service.UserService;
 import org.anna.utils.ReplacementTable;
 import org.anna.utils.ViewUtil;
 
@@ -9,6 +10,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public class HomeController implements HttpHandler {
+    UserService userService;
+    public HomeController(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
