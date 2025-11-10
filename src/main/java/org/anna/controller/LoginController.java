@@ -1,5 +1,6 @@
 package org.anna.controller;
 
+import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.anna.service.UserService;
@@ -10,6 +11,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.URI;
+import java.util.List;
+import java.util.Objects;
 
 public class LoginController implements HttpHandler {
     UserService userService;
@@ -32,38 +36,73 @@ public class LoginController implements HttpHandler {
                 ViewUtil.sendHTML(exchange, "login.html", table.getTable());
             } else if (exchange.getRequestMethod().equalsIgnoreCase("POST")) {
 
-                BufferedReader reader = new BufferedReader(new InputStreamReader(exchange.getRequestBody()));
-                String line = reader.readLine();
+                URI uri = exchange.getRequestURI();
+                System.out.println("URI: " + uri.getPath());
 
-                if (line != null) {
-                    String[] result = line.split("&");
-                    String user = null;
-                    String password = null;
-                    for (String param : result) {
-                        String[] aaa = param.split("=");
-                        if (aaa[0].equals("user") && aaa.length > 1) {
-                            user = aaa[1];
-                        }
-                        if (aaa[0].equals("password") && aaa.length > 1) {
-                            password = aaa[1];
+                if(Objects.equals(uri.getPath(), "/logout")){
+                    String sessionId = null;
+
+                    Headers headers = exchange.getRequestHeaders();
+                    List<String> cookies = headers.get("Cookie");
+
+                    if (cookies != null){
+                        for (String cookie : cookies) {
+//                        System.out.println("Element: " + cookie);
+                            String[] results = cookie.split(";");
+                            for(String item: results){
+                                String[] keyValue = item.split("=");
+                                if(Objects.equals(keyValue[0].trim(), "SESSION")){
+                                    sessionId = keyValue[1];
+                                    System.out.println("Logout page got the sessionId: " + sessionId);
+                                    break;
+                                }
+                            }
+
+                            if(sessionId != null){
+                                break;
+                            }
                         }
                     }
-                    System.out.println(user);
-                    System.out.println(password);
-                    // validations!
 
-                    String sessionId = userService.login(user, password);
-                    System.out.println(sessionId);
-                    if (sessionId != null) {
-                        ViewUtil.sendRedirect(exchange, sessionId);
-                    } else {
-                        ReplacementTable table = new ReplacementTable();
-                        table.setTableRow("@alert-login", """
+                    // remove sessionId
+                    userService.logout(sessionId);
+                    sessionId = null;
+                    // and redirect to login page
+                    ViewUtil.sendRedirect(exchange, sessionId);
+                } else {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(exchange.getRequestBody()));
+                    String line = reader.readLine();
+
+                    if (line != null) {
+                        String[] result = line.split("&");
+                        String user = null;
+                        String password = null;
+                        for (String param : result) {
+                            String[] aaa = param.split("=");
+                            if (aaa[0].equals("user") && aaa.length > 1) {
+                                user = aaa[1];
+                            }
+                            if (aaa[0].equals("password") && aaa.length > 1) {
+                                password = aaa[1];
+                            }
+                        }
+                        System.out.println(user);
+                        System.out.println(password);
+                        // validations!
+
+                        String sessionId = userService.login(user, password);
+                        System.out.println(sessionId);
+                        if (sessionId != null) {
+                            ViewUtil.sendRedirect(exchange, sessionId);
+                        } else {
+                            ReplacementTable table = new ReplacementTable();
+                            table.setTableRow("@alert-login", """
                          <div class="alert alert-danger" role="alert">
                              Got an error during login process, call the support team)//After replace
                          </div>
                          """);
-                        ViewUtil.sendHTML(exchange, "login.html", table.getTable());
+                            ViewUtil.sendHTML(exchange, "login.html", table.getTable());
+                        }
                     }
                 }
             } else {

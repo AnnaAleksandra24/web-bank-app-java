@@ -7,6 +7,12 @@ import java.util.UUID;
 public class UserService {
     private final Map<String, String> users = new HashMap<>();
     private final Map<String, String> sessionIds = new HashMap<>();
+
+    public UserService() {
+//        users.put("Anna", "123");
+//        sessionIds.put("2ea0a546-d0ee-46a0-a5f3-fa1c78d44cb5", "Anna");
+    }
+
     public String login(String login, String password){
         if (users.containsKey(login) || users.containsValue(password)) {
             return null;
@@ -27,7 +33,13 @@ public class UserService {
         }
     }
 
-    public void logout (){
-
+    public void logout (String sessionId){
+        sessionIds.remove(sessionId);
+    }
+    public  String getUserBySessionId (String sessionId) {
+        if(sessionIds.containsKey(sessionId)){
+            return sessionIds.get(sessionId);
+        }
+        return null;
     }
 }
