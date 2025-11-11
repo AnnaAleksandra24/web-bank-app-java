@@ -14,7 +14,7 @@ public class UserService {
     }
 
     public String login(String login, String password){
-        if (users.containsKey(login) || users.containsValue(password)) {
+        if (!users.containsKey(login) || !users.containsValue(password)) {
             return null;
         }
         String sessionID = UUID.randomUUID().toString();

@@ -56,7 +56,7 @@ public class HomeController implements HttpHandler {
                     table.setTableRow("@user-greeting", String.format("""
                          <div class="text-end d-flex align-items-center" style="gap: 8px;">
                                 <h2 class="text-light">Hello, %s</h2>
-                                <form method="POST" acton="/logout"><button type="submit" class="btn btn-warning">Logout</button></form>
+                                <form method="POST" action="/logout"><button type="submit" class="btn btn-warning">Logout</button></form>
                          </div>
                          """, user));
                 }

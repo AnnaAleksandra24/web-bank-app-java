@@ -29,7 +29,6 @@ public class LoginController implements HttpHandler {
         //  System.out.println(exchange.getRequestMethod());
 
         OutputStream os = exchange.getResponseBody();
-        UserService userService = new UserService();
         try {
             if (exchange.getRequestMethod().equalsIgnoreCase("GET")){
                 ReplacementTable table = new ReplacementTable();
@@ -37,7 +36,6 @@ public class LoginController implements HttpHandler {
             } else if (exchange.getRequestMethod().equalsIgnoreCase("POST")) {
 
                 URI uri = exchange.getRequestURI();
-                System.out.println("URI: " + uri.getPath());
 
                 if(Objects.equals(uri.getPath(), "/logout")){
                     String sessionId = null;
@@ -91,7 +89,7 @@ public class LoginController implements HttpHandler {
                         // validations!
 
                         String sessionId = userService.login(user, password);
-                        System.out.println(sessionId);
+                        System.out.println("Login create a new sessionId: " + sessionId);
                         if (sessionId != null) {
                             ViewUtil.sendRedirect(exchange, sessionId);
                         } else {
