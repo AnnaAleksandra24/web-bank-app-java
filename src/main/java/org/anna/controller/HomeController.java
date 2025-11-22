@@ -25,7 +25,7 @@ public class HomeController implements HttpHandler {
         //  URI: /registration
         //  Method(HTTP): GET
 
-        OutputStream os = exchange.getResponseBody();
+                OutputStream os = exchange.getResponseBody();
         try {
             if (exchange.getRequestMethod().equalsIgnoreCase("GET")) {
                 String sessionId = null;
@@ -52,6 +52,7 @@ public class HomeController implements HttpHandler {
                 }
 
                 String user = userService.getUserBySessionId(sessionId);
+                table.setTableRow("@page-title", "Bank App | Home page");
                 if (user != null) {
                     table.setTableRow("@user-greeting", String.format("""
                          <div class="text-end d-flex align-items-center" style="gap: 8px;">
