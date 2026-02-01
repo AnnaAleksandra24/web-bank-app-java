@@ -61,7 +61,7 @@ public class RegistrationController implements HttpHandler {
                    } else {
                        ReplacementTable table = new ReplacementTable();
                        table.setTableRow("@alert-registration", """
-                         <div class="alert alert-danger" role="alert">
+                         <div class="alert alert-danger" role="alert" data-testid="error-registration">
                              Got an error during registration process, call the support team)
                          </div>
                          """);
